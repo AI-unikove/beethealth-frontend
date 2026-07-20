@@ -1,0 +1,6 @@
+export { default as ClientProfileCard } from './ClientProfileCard.vue'
+export { default as ClientTabs } from './ClientTabs.vue'
+export { default as FoodDietContent } from './FoodDietContent.vue'
+export * from './foodLogs'
+export { default as ActivityHydrationContent } from './ActivityHydrationContent.vue'
+export { default as BodyMetricsContent } from './BodyMetricsContent.vue'
