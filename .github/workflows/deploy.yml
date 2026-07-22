@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
+      # Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -18,26 +18,38 @@ jobs:
         with:
           node-version: 22
 
-      # Install dependencies
+      # Install Dependencies
       - name: Install Dependencies
         run: npm install
 
-      # Create .env file if required
+      # Generate .env file
       - name: Generate .env
         run: |
           cp env.template .env
 
-      # Build the application
+      # Build Application
       - name: Build Application
         run: npm run build
 
-      # Upload only the dist folder
-      - name: Upload dist folder to AWS
-        uses: appleboy/scp-action@v0.1.7
+      # Verify GitHub Secrets are available
+      - name: Verify Secrets
+        run: |
+          echo "HOST exists: ${{ secrets.HOST != '' }}"
+          echo "USERNAME exists: ${{ secrets.USERNAME != '' }}"
+          echo "PORT exists: ${{ secrets.PORT != '' }}"
+          echo "SSH_KEY exists: ${{ secrets.SSH_KEY != '' }}"
+          echo "APP_PATH exists: ${{ secrets.APP_PATH != '' }}"
+
+      # Test SSH Connection
+      - name: Test SSH Connection
+        uses: appleboy/ssh-action@v1.2.0
         with:
-           host: ${{ secrets.HOST }}
-            username: ${{ secrets.USERNAME }}
-            key: ${{ secrets.SSH_KEY }}
-            port: ${{ secrets.PORT }}
-            source: "dist/*"
-            target: ${{ secrets.APP_PATH }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            echo "SSH Connection Successful"
+            whoami
+            pwd
+            ls -la
